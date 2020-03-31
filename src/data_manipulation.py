@@ -16,13 +16,17 @@ import uuid
 import pickle
 import copy
 
-def loadSave(fun, filename, force_save=False, args=()):
-    packet = Saveable(filename)
+def loadSave(fun, filename, force_save=False, args=(), path=None):
+    if path is None:
+        packet = Saveable(filename)
+    else:
+        packet = Saveable(filename, path=path)
+
     if packet.is_saved() or force_save:
         data = packet.load()
     else:
         data = fun(*args)
-        packet.save(data=l)
+        packet.save(data=data)
 
     return data
 
