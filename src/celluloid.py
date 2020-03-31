@@ -50,3 +50,4 @@ class Camera:
 
         """
         return ArtistAnimation(self._figure, self._photos, *args, **kwargs)
+
