@@ -17,6 +17,9 @@ import copy
 
 
 def loadSave(fun, filename, force_save=False, args=(), path=None):
+    """This method will run stated funtion and save its output. On next call
+        the output will be automatically loaded.
+    """
     if path is None:
         packet = Saveable(filename)
     else:

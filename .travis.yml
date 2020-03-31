@@ -1,9 +1,5 @@
 sudo: false
 
-arch:
-  - amd64
-  - arm64
-
 language: python
 
 env:
@@ -13,7 +9,7 @@ env:
   - NUMPY_VERSION=1.14.0
   - NUMPY_VERSION=1.15.0
   - NUMPY_VERSION=1.16.0
-  
+
 python:
   - "3.4"
   - "3.5"
@@ -25,7 +21,6 @@ cache: pip
 
 os:
   - linux
-  - osx
 
 compiler:
   - gcc
