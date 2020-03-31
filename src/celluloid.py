@@ -9,7 +9,7 @@ from matplotlib.artist import Artist
 from matplotlib.animation import ArtistAnimation
 
 
-__version__ = '0.2.0'
+__version__ = "0.2.0"
 
 
 class Camera:
@@ -20,9 +20,8 @@ class Camera:
         self._figure = figure
         # need to keep track off artists for each axis
         self._offsets: Dict[str, Dict[int, int]] = {
-            k: defaultdict(int) for k in [
-                'collections', 'patches', 'lines', 'texts', 'artists', 'images'
-            ]
+            k: defaultdict(int)
+            for k in ["collections", "patches", "lines", "texts", "artists", "images"]
         }
         self._photos: List[List[Artist]] = []
 
@@ -33,7 +32,7 @@ class Camera:
             if axis.legend_ is not None:
                 axis.add_artist(axis.legend_)
             for name in self._offsets:
-                new_artists = getattr(axis, name)[self._offsets[name][i]:]
+                new_artists = getattr(axis, name)[self._offsets[name][i] :]
                 frame_artists += new_artists
                 self._offsets[name][i] += len(new_artists)
         self._photos.append(frame_artists)
@@ -50,4 +49,3 @@ class Camera:
 
         """
         return ArtistAnimation(self._figure, self._photos, *args, **kwargs)
-

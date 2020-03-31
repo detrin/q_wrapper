@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
     Module saveable
@@ -16,6 +15,7 @@ import uuid
 import pickle
 import copy
 
+
 def loadSave(fun, filename, force_save=False, args=(), path=None):
     if path is None:
         packet = Saveable(filename)
@@ -30,6 +30,7 @@ def loadSave(fun, filename, force_save=False, args=(), path=None):
 
     return data
 
+
 class Saveable:
     """Saveble objects will help you with saving data."""
 
@@ -38,18 +39,16 @@ class Saveable:
         self.filename = name
         self.data = None
         if path is not None:
-            self.fullpath = p.join(path, name)+".pkl"
+            self.fullpath = p.join(path, name) + ".pkl"
         else:
-            self.fullpath = name+".pkl"
+            self.fullpath = name + ".pkl"
         # self.hash = None
         self.comment = ""
         self.time = None
 
-
     def is_saved(self):
         """Checks if the file exists. """
         return os.path.exists(self.fullpath)
-
 
     def save(self, data=None, comment=""):
         """Save data with some additional information."""
@@ -65,7 +64,6 @@ class Saveable:
         with open(self.fullpath, "wb") as f:
             pickle.dump(data_parcel, f)
 
-
     def load(self):
         """Load saved data with additional information."""
         with open(self.fullpath, "rb") as f:
@@ -78,26 +76,24 @@ class Saveable:
 
         return self.data
 
-
     def _get_fname(self):
         """"Generate UUID."""
         str40 = str(uuid.uuid4())
 
         return str40
-    
 
     def __str__(self):
         """In case you want to printing information about saved data."""
         out = []
         out += ["##### Saved object info #####"]
-        out += ["Name: "+self.filename]
-        out += ["Path: "+self.fullpath]
-        out += ["Time saved: "+time.asctime(time.localtime(self.time))]
-        out += ["Data type: "+str(type(self.data))]
+        out += ["Name: " + self.filename]
+        out += ["Path: " + self.fullpath]
+        out += ["Time saved: " + time.asctime(time.localtime(self.time))]
+        out += ["Data type: " + str(type(self.data))]
         # out += ["Hash: "+self.hash]
         size = sys.getsizeof(self.data)
-        out += ["Size: "+str(size)]
+        out += ["Size: " + str(size)]
         if self.comment != "":
-            out += ["Comment: "+self.comment]
+            out += ["Comment: " + self.comment]
 
-        return '\n'.join(out)
+        return "\n".join(out)
