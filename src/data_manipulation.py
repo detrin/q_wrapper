@@ -45,8 +45,6 @@ class Saveable:
         self.comment = ""
         self.time = None
 
-        return
-
 
     def is_saved(self):
         """Checks if the file exists. """
@@ -66,8 +64,6 @@ class Saveable:
         data_parcel["comment"] = comment
         with open(self.fullpath, "wb") as f:
             pickle.dump(data_parcel, f)
-
-        return
 
 
     def load(self):
