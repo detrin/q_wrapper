@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""All new operations needed for simulations in plain structure."""
+
 import numpy as np
 import sys
 import copy

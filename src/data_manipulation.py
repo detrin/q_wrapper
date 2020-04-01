@@ -65,7 +65,7 @@ class Saveable:
         # data_parcel["hash"] = hash(data)
         data_parcel["comment"] = comment
         with open(self.fullpath, "wb") as f:
-            pickle.dump(data_parcel, f)
+            pickle.dump(data_parcel, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def load(self):
         """Load saved data with additional information."""

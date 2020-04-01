@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Main routines which will be used in simulations."""
 
 import numpy as np
 import sys
@@ -23,9 +24,18 @@ import matplotlib.pyplot as plt
 from celluloid import Camera
 
 from toolkit import Timer
-from operations import *
-from data_process import *
-from plotting import *
+
+from operations import (
+    schrodinger_propagate,
+    get_vibrational_positions,
+    get_q_from_st_prob,
+    trace_over_vibrations,
+)
+
+from core import parallel
+from data_manipulation import loadSave
+
+from plotting import plot_wavepocket_of_monomers_simple
 from building import calculate_FcProd, diagonalize
 
 
@@ -48,24 +58,28 @@ def make_video(args):
     Nvib_0 = settings["Nvib_0"]
     Nvib_1 = settings["Nvib_1"]
     print("loading aggregate ...")
-    agg = load_save(agg_name, building_fun, args=(settings,))
-    print("loading eigenvecs and eigenvalues ...")
+    agg = loadSave(agg_name, building_fun, args=(settings,))
+    print("loading eigenvectors and eigenvalues ...")
     H = agg.get_Hamiltonian()
     HH = H.data
-    w, v, v_i = load_save(agg_name + "_diag", diagonalize, args=(HH,))
+    w, v, v_i = loadSave(agg_name + "_diag", diagonalize, args=(HH,))
 
     # Set initial condition
     print("setting initial condition ...")
+
+    def fun_wrapper(q):
+        return get_psi_part(n, q) * wave_gauss(q)
+
     Amp = 1
     psi_0 = np.zeros((HH.shape[0]), dtype="complex128")
     wave_gauss = lambda q: gaussian(q, -2.0, 0.5, Amp)
     for n in range(Nvib_0):
-        result = integrate.quad(lambda q: get_psi_part(n, q) * wave_gauss(q), -100, 100)
+        result = integrate.quad(fun_wrapper, -100, 100)
         psi_t_i = agg.vibsigs.index(((0, 0, 0), (n, 0, 0)))
         psi_0[psi_t_i] = result[0]
     wave_gauss = lambda q: gaussian(q, 2.0, 0.5, Amp)
     for n in range(Nvib_1):
-        result = integrate.quad(lambda q: get_psi_part(n, q) * wave_gauss(q), -100, 100)
+        result = integrate.quad(fun_wrapper, -100, 100)
         psi_t_i = agg.vibsigs.index(((0, 1, 0), (0, n, 0)))
         # psi_0[psi_t_i] = result[0]
 
@@ -86,7 +100,7 @@ def make_video(args):
 
         for mol_i in range(Nmol):
             for st in [0, 1]:
-                plot_func(
+                plot_wavepocket_of_monomers_simple(
                     axs[st, mol_i],
                     q_lin,
                     q_prob[mol_i, st],
@@ -113,25 +127,29 @@ def propagate_red_dens_mat(args):
     Nvib_0 = settings["Nvib_0"]
     Nvib_1 = settings["Nvib_1"]
     print("loading aggregate ...")
-    agg = load_save(agg_name, building_fun, args=(settings,))
+    agg = loadSave(agg_name, building_fun, args=(settings,))
     print("loading FcProd ...")
-    FcProd = load_save(agg_name + "_FcProd", calculate_FcProd, args=(agg,))
-    print("loading eigenvecs and eigenvalues ...")
+    FcProd = loadSave(agg_name + "_FcProd", calculate_FcProd, args=(agg,))
+    print("loading eigenvectors and eigenvalues ...")
     H = agg.get_Hamiltonian()
     HH = H.data
-    w, v, v_i = load_save(agg_name + "_diag", diagonalize, args=(HH,))
+    w, v, v_i = loadSave(agg_name + "_diag", diagonalize, args=(HH,))
 
     print("setting initial condition ...")
+
+    def fun_wrapper(q):
+        return get_psi_part(n, q) * wave_gauss(q)
+
     Amp = 1
     psi_0 = np.zeros((HH.shape[0]), dtype="complex128")
     wave_gauss = lambda q: gaussian(q, -2.0, 0.5, Amp)
     for n in range(Nvib_0):
-        result = integrate.quad(lambda q: get_psi_part(n, q) * wave_gauss(q), -100, 100)
+        result = integrate.quad(fun_wrapper, -100, 100)
         psi_t_i = agg.vibsigs.index(((1, 0, 0), (n, 0, 0)))
         psi_0[psi_t_i] = result[0]
     wave_gauss = lambda q: gaussian(q, 2.0, 0.5, Amp)
     for n in range(Nvib_1):
-        result = integrate.quad(lambda q: get_psi_part(n, q) * wave_gauss(q), -100, 100)
+        result = integrate.quad(fun_wrapper, -100, 100)
         psi_t_i = agg.vibsigs.index(((1, 0, 0), (0, n, 0)))
         # psi_0[psi_t_i] = result[0]
 
@@ -142,7 +160,7 @@ def propagate_red_dens_mat(args):
             if sum(state[0]) == 1 and n not in selected_el_st:
                 selected_el_st.append(n)
 
-    print("runnning simulation ...")
+    print("running simulation ...")
     red_density_mat_l = []
     for psi_t in tqdm(
         schrodinger_propagate(psi_0=psi_0, H=HH, t0=t0, t1=t1, N=N, w=w, v=v, v_i=v_i),

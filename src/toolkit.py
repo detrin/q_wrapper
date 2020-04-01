@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
+"""All tools for debugging and comparing code performance."""
 
-from timeit import default_timer as timer
+import timeit
+import time
 
 
 class Timer:
     """Timer object for debbuging purposes only. """
 
-    def __init__(self):
+    def __init__(self, use_timeit=False):
         self.time_flags = []
         self.time_names = []
-        pass
+        self.use_timeit = use_timeit
 
     def flag(self, name):
         """Flag point in code."""
-        self.time_flags.append(timer())
+        if self.use_timeit:
+            self.time_flags.append(timeit.timer())
+        else:
+            self.time_flags.append(time.time())
         self.time_names.append(name)
 
     def evaluate(self):
