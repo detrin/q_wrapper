@@ -3,5 +3,5 @@
 # If not run $ pip install black
 
 prepareforcommit:
-	python -m unittest discover
+	python3 -m unittest discover -s tests
 	black .

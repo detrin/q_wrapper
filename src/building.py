@@ -11,9 +11,6 @@ import scipy
 
 import quantarhei as qr
 
-# from quantarhei import printlog as print
-# from quantarhei.utils.vectors import X
-
 from quantarhei import Molecule
 from quantarhei import Mode
 from quantarhei import Aggregate

@@ -10,31 +10,35 @@ from multiprocessing import Pool
 from tqdm import tqdm
 
 
-def parallel(function, array, n_jobs=4, use_kwargs=False):
+def parallel(function, args, n_jobs=4, use_kwargs=False, verbose=False):
     """Funtion for parallel calculations with usage of tqdm progress bar."""
-    if n_jobs == 1:
-        return [function(**a) if use_kwargs else function(a) for a in tqdm(array)]
+    if verbose:
+        if n_jobs == 1:
+            return [function(**a) if use_kwargs else function(a) for a in tqdm(args)]
 
-    with ProcessPoolExecutor(max_workers=n_jobs) as pool:
-        if use_kwargs:
-            futures = [pool.submit(function, **a) for a in array]
-        else:
-            futures = [pool.submit(function, a) for a in array]
-        kwargs = {
-            "total": len(futures),
-            "unit": "it",
-            "unit_scale": True,
-            "leave": True,
-        }
-        for f in tqdm(as_completed(futures), **kwargs):
-            pass
+        with ProcessPoolExecutor(max_workers=n_jobs) as pool:
+            if use_kwargs:
+                futures = [pool.submit(function, **a) for a in args]
+            else:
+                futures = [pool.submit(function, a) for a in args]
+            kwargs = {
+                "total": len(futures),
+                "unit": "it",
+                "unit_scale": True,
+                "leave": True,
+            }
+            for f in tqdm(as_completed(futures), **kwargs):
+                pass
 
-    out = []
-    for i, future in tqdm(enumerate(futures)):
-        try:
-            out.append(future.result())
-        except Exception as e:
-            out.append(e)
+        out = []
+        for i, future in tqdm(enumerate(futures)):
+            try:
+                out.append(future.result())
+            except Exception as e:
+                out.append(e)
+    else:
+        pool = Pool(processes=n_jobs)
+        out = pool.map(function, args)
     return out
 
 

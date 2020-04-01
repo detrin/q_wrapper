@@ -2,6 +2,7 @@
 """Simple plotting functions."""
 
 import sys
+import numpy as np
 
 from matplotlib import rc
 import matplotlib.pyplot as plt
@@ -9,24 +10,24 @@ import matplotlib.pyplot as plt
 
 def show_hamiltonian(H):
     """Plot picture from hamiltonian in order to inspect it visually."""
-    data = numpy.log((H.data + 1))
+    data = np.log((H.data + 1))
     plt.imshow(data, interpolation="nearest")
     plt.colorbar()
     plt.show()
 
 
 def print_matrix(A, precision=2, linewidth=100, threshold=None):
-    """Output numpy matrix with set precision."""
+    """Output np matrix with set precision."""
     if threshold is None:
         threshold = sys.maxsize
-    with numpy.printoptions(
+    with np.printoptions(
         precision=precision,
         suppress=True,
         threshold=sys.maxsize,
         formatter={"float": "{:0.2f}".format},
         linewidth=linewidth,
     ):
-        print(H)
+        print(A)
 
 
 def plot_wavepocket_of_monomers_simple(

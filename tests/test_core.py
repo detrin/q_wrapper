@@ -6,9 +6,23 @@ import unittest
 import time
 import numpy as np
 
+from contextlib import contextmanager
+from io import StringIO
+
 from src.core import parallel
 
 N = 10
+
+
+@contextmanager
+def captured_output():
+    new_out, new_err = StringIO(), StringIO()
+    old_out, old_err = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = new_out, new_err
+        yield sys.stdout, sys.stderr
+    finally:
+        sys.stdout, sys.stderr = old_out, old_err
 
 
 def collatz(n):
@@ -23,8 +37,7 @@ def collatz(n):
 
 
 class TestParallel(unittest.TestCase):
-    def SetUp(self):
-        np.random.seed(1701)  # NCC-1701-D
+    def setUp(self):
         self.data = [x for x in range(N)]
 
     def test_parallel(self):
@@ -34,5 +47,10 @@ class TestParallel(unittest.TestCase):
 
         args = [x for x in range(N)]
         data_new = parallel(collatz, args)
+
+        self.assertEqual(data, data_new)
+
+        with captured_output() as (out, err):
+            data_new = parallel(collatz, args, verbose=True)
 
         self.assertEqual(data, data_new)
