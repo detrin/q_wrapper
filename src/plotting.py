@@ -14,8 +14,6 @@ def show_hamiltonian(H):
     plt.colorbar()
     plt.show()
 
-    return
-
 
 def print_matrix(A, precision=2, linewidth=100, threshold=None):
     """Output numpy matrix with set precision."""

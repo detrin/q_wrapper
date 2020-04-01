@@ -43,8 +43,8 @@ def get_psi(q, C):
     """Return the harmonic oscillator wavefunction for level v on grid q."""
     Hr_l = make_Hr(len(C))
     amp = 0
-    for n in range(len(C)):
-        amp += C[n] * 1.0 / np.sqrt(np.sqrt(np.pi) * 2 ** n * factorial(n)) * Hr_l[n](q)
+    for n, C_n in enumerate(C):
+        amp += C_n * 1.0 / np.sqrt(np.sqrt(np.pi) * 2 ** n * factorial(n)) * Hr_l[n](q)
     amp *= np.exp(-q * q / 2.0)
     return amp
 
@@ -117,7 +117,6 @@ def trace_B_except(agg, psi, vib_pos, trace_ind, new_states):
 
 def create_trace_E_except(agg, el_pos):
     """First example of trace over electronic states."""
-    agg.Ntot
     heap = []
     positions = []
     for ist in range(agg.Ntot):
@@ -143,7 +142,6 @@ def trace_E_except(agg, psi, el, trace_ind, new_states):
 
 def create_trace_total(agg, el_pos, vib_pos):
     "Example of total trace."
-    agg.Ntot
     heap = []
     positions = []
     for ist in range(agg.Ntot):
