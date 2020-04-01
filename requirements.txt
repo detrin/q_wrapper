@@ -1,3 +1,5 @@
 numpy
 matplotlib
 tqdm # is it really necessary?
+paramiko
+scp
