@@ -261,7 +261,8 @@ class SSH_Worker(queue.Queue):
                 try:
                     item(*args, **kwargs, worker_ind=worker_ind)
                     attempts = max_attempts
-                except:
+                except Exception as e:
+                    print(e)
                     attempts += 1
 
             # We want to keep progress of tasks in terminal
