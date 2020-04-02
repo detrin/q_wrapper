@@ -7,7 +7,8 @@ import time
 import pickle
 import threading
 
-import queue 
+import queue
+
 
 class SSH_Agent:
     """To distribute tasks over ssh to nodes we will use this method."""
@@ -31,7 +32,9 @@ class SSH_Agent:
         # save group names by addresses
         self.group_names = {}
 
-    def add_address(self, ip_address=None, username=None, password=None, group_name=None):
+    def add_address(
+        self, ip_address=None, username=None, password=None, group_name=None
+    ):
         """Add one ip addres with username, password and group name."""
         if ip_address is None or username is None or password is None:
             raise Exception("Please state ip address, username and password.")
@@ -50,13 +53,22 @@ class SSH_Agent:
         """Create one ssh client for scp or only ssh usage."""
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(hostname=server_ip, username=user, password=password, allow_agent=False, look_for_keys=False, timeout=10)
+        client.connect(
+            hostname=server_ip,
+            username=user,
+            password=password,
+            allow_agent=False,
+            look_for_keys=False,
+            timeout=10,
+        )
 
         return client
 
     def progress(self, filename, size, sent):
         """Progress bar for file sending."""
-        sys.stdout.write("%s\'s progress: %.2f%%   \r" % (filename, float(sent)/float(size)*100) )
+        sys.stdout.write(
+            "%s's progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100)
+        )
 
     def connect_scp(self):
         """Connect to all groups with scp."""
@@ -69,7 +81,9 @@ class SSH_Agent:
             username, password = self.usernames[server_ip], self.passwords[server_ip]
             ssh_ind = self.server_list.index(server_ip)
             ssh_client = self.ssh_connections[ssh_ind]
-            scp_connection = SCPClient(ssh_client.get_transport(), progress=self.progress)
+            scp_connection = SCPClient(
+                ssh_client.get_transport(), progress=self.progress
+            )
             self.scp_connections.append(scp_connection)
 
     def connect_ssh(self):
@@ -91,7 +105,6 @@ class SSH_Agent:
             else:
                 last_group_name = group_name
 
-    
     def connect_all(self):
         """Connect to both scp and ssh."""
         self.connect_ssh()
@@ -115,14 +128,14 @@ class SSH_Agent:
         """Disconnect all connections."""
         self.disconnect_scp()
         self.disconnect_ssh()
-    
+
     def put(self, client, localfile, remotefile):
         """Send file through scp."""
-        client.put(localfile, self.path+remotefile, recursive=True)
-    
+        client.put(localfile, self.path + remotefile, recursive=True)
+
     def get(self, client, remotefile, localfile):
         """Get file though scp."""
-        client.get(self.path+remotefile, localfile, recursive=True)
+        client.get(self.path + remotefile, localfile, recursive=True)
 
     def send_files(self, files, initial=False):
         """Sending files before any task execution."""
@@ -135,11 +148,15 @@ class SSH_Agent:
                 ssh_client = self.ssh_connections[ind]
                 scp_client = self.scp_connections[ind]
                 if initial:
-                    self.exec_command_plain(ssh_client, "mkdir -p "+self.path)
+                    self.exec_command_plain(ssh_client, "mkdir -p " + self.path)
                     # self.exec_command_plain(ssh_client, "rm -f "+self.path+"transfer/task.pkl")
                     print(self.path)
-                    self.exec_command_plain(ssh_client, "rm "+self.path+"transfer/*")
-                    self.exec_command_plain(ssh_client, "mkdir "+self.path+"transfer")
+                    self.exec_command_plain(
+                        ssh_client, "rm " + self.path + "transfer/*"
+                    )
+                    self.exec_command_plain(
+                        ssh_client, "mkdir " + self.path + "transfer"
+                    )
                 for file in files:
                     self.put(scp_client, file, file)
 
@@ -155,18 +172,20 @@ class SSH_Agent:
         """"Execute command on worker with given index."""
 
         # Execute
-        stdin, stdout, stderr = self.ssh_connections[worker_ind].exec_command(command_str)
+        stdin, stdout, stderr = self.ssh_connections[worker_ind].exec_command(
+            command_str
+        )
 
         # Wait till finished
         exit_status = stdout.channel.recv_exit_status()
 
         # Get results
         scp_client = self.scp_connections[worker_ind]
-        filename = "transfer/results_"+str(ind)+".pkl"
+        filename = "transfer/results_" + str(ind) + ".pkl"
         status = self.get(scp_client, filename, filename)
 
         return exit_status
-    
+
     def exec_command_plain(self, client, command_str):
         """Plain command execution."""
         stdin, stdout, stderr = client.exec_command(command_str)
@@ -193,13 +212,21 @@ class SSH_Agent:
 
         # Execute commands through ssh and transfer script
         for ind in range(len(fun_args)):
-            q.add_task(self.exec_command, ind, "cd "+self.path+";python transfer_script.py --task_num "+str(ind)+" ;cd ~")
-        
-        q.join() 
+            q.add_task(
+                self.exec_command,
+                ind,
+                "cd "
+                + self.path
+                + ";python transfer_script.py --task_num "
+                + str(ind)
+                + " ;cd ~",
+            )
 
-        # After execution real results locally and return results        
+        q.join()
+
+        # After execution real results locally and return results
         for ind in range(len(fun_args)):
-            filename = "transfer/results_"+str(ind)+".pkl"
+            filename = "transfer/results_" + str(ind) + ".pkl"
             with open(filename, "rb") as f:
                 result = pickle.load(f)
             results.append(result)
@@ -232,7 +259,7 @@ class SSH_Worker(queue.Queue):
             attempts, max_attempts = 0, 3
             while attempts < max_attempts:
                 try:
-                    item(*args, **kwargs, worker_ind=worker_ind)  
+                    item(*args, **kwargs, worker_ind=worker_ind)
                     attempts = max_attempts
                 except:
                     attempts += 1
