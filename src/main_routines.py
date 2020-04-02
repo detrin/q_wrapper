@@ -23,20 +23,18 @@ from math import factorial
 import matplotlib.pyplot as plt
 from celluloid import Camera
 
-from toolkit import Timer
-
-from operations import (
+from .operations import (
     schrodinger_propagate,
     get_vibrational_positions,
     get_q_from_st_prob,
     trace_over_vibrations,
 )
 
-from core import parallel
-from data_manipulation import loadSave
+from .core import parallel
+from .data_manipulation import loadSave
 
-from plotting import plot_wavepocket_of_monomers_simple
-from building import calculate_FcProd, diagonalize
+from .plotting import plot_wavepocket_of_monomers_simple
+from .building import calculate_FcProd, diagonalize
 
 
 def make_video_wrapper(args):
@@ -101,7 +99,7 @@ def make_video(args):
         for mol_i in range(Nmol):
             for st in [0, 1]:
                 plot_wavepocket_of_monomers_simple(
-                    axs[st, mol_i],
+                    axs[1-st, mol_i],
                     q_lin,
                     q_prob[mol_i, st],
                     yoffset=0,

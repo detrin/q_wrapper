@@ -9,7 +9,7 @@ from matplotlib import rc
 from math import factorial
 import matplotlib.pyplot as plt
 
-from core import parallel
+from .core import parallel
 
 
 def N(v):
@@ -175,8 +175,9 @@ def gaussian(x, mu, sig, A):
     )
 
 
-def get_vibrational_positions(agg, psi, Nmol, Nvib_0, Nvib_1):
+def get_vibrational_positions(agg, psi, settings):
     "Get probability of vibrational positions of monomers."
+    Nmol, Nvib_0, Nvib_1 = settings["Nmol"], settings["Nvib_0"], settings["Nvib_1"]
     st_prob = np.zeros((Nmol, 2, Nvib_0), dtype="complex128")
     for ist in range(agg.Ntot):
         el_st, vib_st = agg.vibsigs[ist]

@@ -3,22 +3,13 @@
 
 import numpy as np
 import sys
-from tqdm import tqdm
-import pickle
-from scipy.integrate import odeint
-import scipy.integrate as integrate
-import scipy
 
 import quantarhei as qr
-
 from quantarhei import Molecule
 from quantarhei import Mode
 from quantarhei import Aggregate
 
-from matplotlib import rc
 from math import factorial
-import matplotlib.pyplot as plt
-from celluloid import Camera
 
 
 def build_aggregate_1(settings):
