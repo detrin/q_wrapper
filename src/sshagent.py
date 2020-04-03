@@ -149,8 +149,7 @@ class SSH_Agent:
                 scp_client = self.scp_connections[ind]
                 if initial:
                     self.exec_command_plain(ssh_client, "mkdir -p " + self.path)
-                    # self.exec_command_plain(ssh_client, "rm -f "+self.path+"transfer/task.pkl")
-                    print(self.path)
+                    self.exec_command_plain(ssh_client, "rm -f "+self.path+"transfer/task.pkl")
                     self.exec_command_plain(
                         ssh_client, "rm " + self.path + "transfer/*"
                     )
