@@ -101,7 +101,7 @@ class SSH_Agent:
             self.ssh_connections.append(ssh_connection)
 
             if group_name == last_group_name:
-                time.sleep(5)
+                time.sleep(0.25)
             else:
                 last_group_name = group_name
 
