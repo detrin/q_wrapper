@@ -125,7 +125,7 @@ def create_trace_E_except(agg, el_pos):
     return positions, heap
 
 
-def trace_E_except(agg, psi, el, trace_ind, new_states):
+def trace_E_except(agg, psi, _el, trace_ind, new_states):
     """First example of trace over electronic states."""
     new_psi = np.zeros((len(trace_ind)), dtype="complex128")
     for ist in range(agg.Ntot):
