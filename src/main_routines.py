@@ -101,9 +101,6 @@ def make_video(args):
 def propagate_red_dens_mat(args):
     """Evaluate only reduced density matrix."""
     agg_name, settings, t0, t1, N, building_fun = args
-
-    # Load main vars
-    Nmol = settings["Nmol"]
     Nvib_0 = settings["Nvib_0"]
     Nvib_1 = settings["Nvib_1"]
     print("loading aggregate ...")
