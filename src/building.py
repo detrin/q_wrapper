@@ -2,14 +2,11 @@
 """Aggregate building using quantarhei package."""
 
 import numpy as np
-import sys
 
 import quantarhei as qr
 from quantarhei import Molecule
 from quantarhei import Mode
 from quantarhei import Aggregate
-
-from math import factorial
 
 
 def build_aggregate_1(settings):

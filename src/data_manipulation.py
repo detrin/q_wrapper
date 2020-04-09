@@ -13,7 +13,6 @@ from os import path as p
 import time
 import uuid
 import pickle
-import copy
 
 
 def loadSave(fun, filename, force_save=False, args=(), path=None):

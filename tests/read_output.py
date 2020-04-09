@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-import unittest
-import time
-import numpy as np
 
 from os import listdir
 from os.path import isfile, join

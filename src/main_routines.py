@@ -2,24 +2,8 @@
 """Main routines which will be used in simulations."""
 
 import numpy as np
-import sys
 from tqdm import tqdm
-import pickle
-from scipy.integrate import odeint
 import scipy.integrate as integrate
-import scipy
-
-import quantarhei as qr
-
-# from quantarhei import printlog as print
-# from quantarhei.utils.vectors import X
-
-from quantarhei import Molecule
-from quantarhei import Mode
-from quantarhei import Aggregate
-
-from matplotlib import rc
-from math import factorial
 import matplotlib.pyplot as plt
 from celluloid import Camera
 
@@ -29,8 +13,6 @@ from .operations import (
     get_q_from_st_prob,
     trace_over_vibrations,
 )
-
-from .core import parallel
 from .data_manipulation import loadSave
 
 from .plotting import plot_wavepocket_of_monomers_simple
