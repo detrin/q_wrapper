@@ -173,7 +173,7 @@ def gaussian(x, mu, sig, A):
 
 def get_vibrational_positions(agg, psi, settings):
     "Get probability of vibrational positions of monomers."
-    Nmol, Nvib_0, Nvib_1 = settings["Nmol"], settings["Nvib_0"], settings["Nvib_1"]
+    Nmol, Nvib_0 = settings["Nmol"], settings["Nvib_0"]
     st_prob = np.zeros((Nmol, 2, Nvib_0), dtype="complex128")
     for ist in range(agg.Ntot):
         el_st, vib_st = agg.vibsigs[ist]
@@ -210,7 +210,6 @@ def trace_over_vibrations_core(args):
     red_density_mat = np.zeros((el_st_len, el_st_len), dtype="complex128")
     for i_n in agg.vibindices[n]:
         for i_m in agg.vibindices[m]:
-            n_pt, m_pt = selected_el_st.index(n), selected_el_st.index(m)
             red_density_mat[n, m] += np.conj(psi[i_n]) * psi[i_n] * FcProd[i_n, i_m]
     return red_density_mat
 

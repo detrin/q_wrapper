@@ -74,11 +74,8 @@ class SSH_Agent:
         """Connect to all groups with scp."""
         self.disconnect_scp()
 
-        last_group_name = None
-
         for ind in range(self.n_jobs):
             server_ip = self.server_list[ind]
-            username, password = self.usernames[server_ip], self.passwords[server_ip]
             ssh_ind = self.server_list.index(server_ip)
             ssh_client = self.ssh_connections[ssh_ind]
             scp_connection = SCPClient(
@@ -171,7 +168,7 @@ class SSH_Agent:
         """"Execute command on worker with given index."""
 
         # Execute
-        stdin, stdout, stderr = self.ssh_connections[worker_ind].exec_command(
+        _, stdout, _ = self.ssh_connections[worker_ind].exec_command(
             command_str
         )
 
@@ -181,13 +178,13 @@ class SSH_Agent:
         # Get results
         scp_client = self.scp_connections[worker_ind]
         filename = "transfer/results_" + str(ind) + ".pkl"
-        status = self.get(scp_client, filename, filename)
+        self.get(scp_client, filename, filename)
 
         return exit_status
 
     def exec_command_plain(self, client, command_str):
         """Plain command execution."""
-        stdin, stdout, stderr = client.exec_command(command_str)
+        _, stdout, _ = client.exec_command(command_str)
         exit_status = stdout.channel.recv_exit_status()
         return exit_status
 

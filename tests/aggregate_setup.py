@@ -29,8 +29,6 @@ def build_testing_aggregate():
     Nvib_0 = 3
     Nvib_1 = 3
 
-    E2 = E1 + Edelta
-
     mol_l = []
     mod_l = []
 

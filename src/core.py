@@ -23,11 +23,11 @@ def parallel(function, args, n_jobs=4, use_kwargs=False, verbose=False):
                 "unit_scale": True,
                 "leave": True,
             }
-            for f in tqdm(as_completed(futures), **kwargs):
+            for _ in tqdm(as_completed(futures), **kwargs):
                 pass
 
         out = []
-        for i, future in tqdm(enumerate(futures)):
+        for _, future in tqdm(enumerate(futures)):
             try:
                 out.append(future.result())
             except Exception as e:
