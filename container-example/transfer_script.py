@@ -2,7 +2,6 @@
 
 import sys
 import pickle
-import importlib
 
 from q_wrapper.src.core import parallel
 

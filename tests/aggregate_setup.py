@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-import sys
-import pickle
-from scipy.integrate import odeint
 import scipy.integrate as integrate
-import scipy
 
 import quantarhei as qr
 

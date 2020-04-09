@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
 import unittest
-import time
-import numpy as np
 
 from contextlib import contextmanager
 from io import StringIO

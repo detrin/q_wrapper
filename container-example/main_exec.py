@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import time
 
 
 def test_fun(args):
