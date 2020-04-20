@@ -76,6 +76,7 @@ class SSH_Agent:
 
         for ind in range(self.n_jobs):
             server_ip = self.server_list[ind]
+            print("Connecting for pure scp to", server_ip)
             ssh_ind = self.server_list.index(server_ip)
             ssh_client = self.ssh_connections[ssh_ind]
             scp_connection = SCPClient(
@@ -91,6 +92,7 @@ class SSH_Agent:
 
         for ind in range(self.n_jobs):
             server_ip = self.server_list[ind]
+            print("Connecting for ssh to", server_ip)
             group_name = self.group_names[server_ip]
             username, password = self.usernames[server_ip], self.passwords[server_ip]
 
@@ -98,7 +100,7 @@ class SSH_Agent:
             self.ssh_connections.append(ssh_connection)
 
             if group_name == last_group_name:
-                time.sleep(0.25)
+                time.sleep(0.1)
             else:
                 last_group_name = group_name
 
@@ -146,7 +148,9 @@ class SSH_Agent:
                 scp_client = self.scp_connections[ind]
                 if initial:
                     self.exec_command_plain(ssh_client, "mkdir -p " + self.path)
-                    self.exec_command_plain(ssh_client, "rm -f "+self.path+"transfer/task.pkl")
+                    self.exec_command_plain(
+                        ssh_client, "rm -f " + self.path + "transfer/task.pkl"
+                    )
                     self.exec_command_plain(
                         ssh_client, "rm " + self.path + "transfer/*"
                     )
@@ -199,7 +203,7 @@ class SSH_Agent:
         # Send arguments in file
         filename = "transfer/task.pkl"
         with open(filename, "wb") as f:
-            pickle.dump((fun.__name__, fun_args), f)
+            pickle.dump((fun.__name__, fun_args), f, protocol=pickle.HIGHEST_PROTOCOL)
         self.send_files([filename])
 
         # Prepare queue
@@ -213,7 +217,9 @@ class SSH_Agent:
                 ind,
                 "cd "
                 + self.path
-                + ";python transfer_script.py --task_num "
+                + ";python transfer_script.py --n_jobs "
+                + str(n_threads)
+                + " --task_num "
                 + str(ind)
                 + " ;cd ~",
             )
@@ -262,5 +268,5 @@ class SSH_Worker(queue.Queue):
                     attempts += 1
 
             # We want to keep progress of tasks in terminal
-            print("Finished job", args[0])
+            print("Finished job", args[0], "--------")
             self.task_done()
