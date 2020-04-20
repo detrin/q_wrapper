@@ -197,7 +197,7 @@ class SSH_Agent:
         for ssh_client in self.ssh_connections:
             self.exec_command_plain(ssh_client, "pkill -f transfer_script")
 
-    def run_parallel(self, fun, fun_args):
+    def run_parallel(self, fun, fun_args, n_threads):
         """Execute function with arguments from queue."""
 
         # Send arguments in file

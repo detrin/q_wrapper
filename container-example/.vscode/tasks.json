@@ -1,0 +1,21 @@
+{ 
+    "version": "2.0.0", 
+    "tasks": [ { 
+        "label": "push to ms", 
+        "type": "shell", 
+        "command": "rsync", 
+        "args": ["-zavh", "--info=progress2", ".", "hermanda@u-pl1.ms.mff.cuni.cz:/afs/ms/u/h/hermanda/Bc/ansatz/", "--delete"] 
+    },
+    { 
+        "label": "pull from ms", 
+        "type": "shell", 
+        "command": "rsync", 
+        "args": ["-zavh", "--info=progress2", "hermanda@u-pl1.ms.mff.cuni.cz:/afs/ms/u/h/hermanda/Bc/ansatz/", ".", "--delete"] 
+    },
+    { 
+        "label": "format", 
+        "type": "shell", 
+        "command": "black", 
+        "args": ["."] 
+    } ] 
+}
